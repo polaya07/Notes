@@ -1,0 +1,11 @@
+#Create a new branch 
+git checkout -b [namebranch]
+
+#Push the branch on github
+git push origin [namebranch]
+
+#Check branches
+git branch -a
+
+#Delete branches
+git branch -d [namebranch]

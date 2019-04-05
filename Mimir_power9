@@ -1,0 +1,44 @@
+#Requirements
+1. Clone (Mimir-dev) https://github.com/TauferLab/Mimir-dev.git
+   $git checkout release-part1
+2. Install mpich3.2
+3. Install python.7.5 (default from lookout)
+4. Clone (Mimir-scripts)
+   $git checkout power9
+5. Install python3.7.2 for generating the data. 
+
+
+#Tests
+$cd Mimir-scripts/power9
+
+#Datasets are in shared folder
+sharedfolder/datasets
+
+#Results are in shared folder
+sharedfolder/results
+
+#Raw Output are in shared folder
+sharedfolder/output
+
+
+
+#For running Join tests:
+
+$sbatch test_join_multinode.sh (3 times)
+OUTPUT:
+*profile.txt
+testtime, rank, size, total_time...
+
+
+$sbatch test_join_split_multinode.sh (3 times)
+
+$sbatch test_join_split_rp_multinode.sh (3 times)
+
+
+#For plotting
+
+
+
+ 
+
+

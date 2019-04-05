@@ -1,0 +1,5 @@
+1. Shared memory: The systems communicate with each other of the processors and with the shared memory with a shared bus. Which means that any access from any processor to main mamory would have equal latency. (a shared memory multiprocessor offers a single memory space used by all processors)
+*is memory that may be simultaneously accessed by multiple programs with an intent to provide communication among them or avoid redundant copies. Shared memory is an efficient means of passing data between programs. Depending on context, programs may run on a single processor or on multiple separate processors. 
+2. Distributed memory:  Refers to a multiprocessor computer system in which each processor has its own private memory. Computational tasks can only operate on local data, and if remote data is required, the computational task must communicate with one or more remote processors.
+*there is typically a processor, a memory, and some form of interconnection that allows programs on each processor to interact with each other. 
+ 

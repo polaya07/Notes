@@ -1,0 +1,12 @@
+####jobs in the queue
+1. squeue -u polaya
+####interactive job
+2. salloc -N 1 -C haswell -q interactive -t 01:00:00
+####statistics of the job
+3. sstat --format=AveCPU,AvePages,AveRSS,AveVMSize,JobID -j <jobid> --allsteps
+####statistics all jobs in user's account
+4.sacct --format="CPUTime,JobID,MaxRSS,MaxVMSize"
+####status of a job
+5.scontrol show job <jobid>
+
+

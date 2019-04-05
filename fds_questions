@@ -1,0 +1,24 @@
+1. Number of meshes?
+WHAT IS A MESH: is a single right parallelepiped, i.e., a box. 
+HOW IT IS DEFINED: &MESH IJK=10,20,30, XB=0.0,1.0,0.0,2.0,0.0,3.0 /
+                   XB: Coordinates of the mesh. 
+		   IJK: Number of uniform cells to subdive the mesh. 
+
+WHAT DOES IT MEAN TO HAVE MULTIPLE MESHES: the computational domain consists of more than one computational mesh
+HOW DO I DECLARE MULTIPLE MESHES: there should be a MESH line for each. The order in which these lines are entered in the input file matters		&MESH ID='mesh1', IJK=..., XB=..., MPI_PROCESS=0 /
+	    &MESH ID='mesh2', IJK=..., XB=..., MPI_PROCESS=1 /
+		.
+		.
+		.
+	    &MESH ID='meshN', IJK=..., XB=..., MPI_PROCESS=N /
+
+2. MPI and OpenMP?
+- The use of OpenMP does not require the computational domain to be broken up into multiple meshes.
+- The use of MPI requires that the computational domain must be divided into multiple meshes and typically each mesh is assigned its own process. 
+
+- the use of OpenMP speeds the calculation by at most factor of 2, regardless of how many OpenMP threads you assign to each MPI process.
+- It is usually better to divide the computational domain into more meshes and set the number of OpenMP threads to 1. 
+   * This all depends on your particular OS, hardware, network traffic, and so on. You should choose a good test case and try different meshing and parallel processing strategies to see what is best for you.
+3. Measuring memory and time consumption:
+3.1 sacct --format="CPUTime,JobID,MaxRSS,MaxVMSize" 
+3.2 /usr/bin/time -f "mem=%K RSS=%M elapsed=%E cpu.sys=%S .user=%U"

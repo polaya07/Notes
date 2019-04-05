@@ -1,0 +1,27 @@
+1. We added some stuff in ~/.bashrc
+2. We changes things from vim multi_freq_test.sh
+3. We also changed things from freq_test.sh
+
+4. create a git repos with results
+5. git init
+6. steps from the web page
+
+7. clone it in my local
+8. clone mimir scripts in my local
+9. parse and plot
+
+10. It's not giving any values from power memory
+TO CHECK
+1. NOT SAME PLOT 
+2. NOT VALUES FROM MEMORY
+3. CHANGE PLOT SCRIPT TO PLOT MULTIPLE RESULTS
+
+1. multitest (set up parameters)
+2. pull results
+3. local and parse
+4. plot
+
+
+Once you have the results (outputs and profiles)
+$ /.parse.sh #Changing the specific folders where to run 
+$ python hw_stats_plot.py 'J*' J_testcomplete.png

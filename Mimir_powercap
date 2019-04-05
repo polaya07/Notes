@@ -1,0 +1,38 @@
+#mpich
+
+ wget http://www.mpich.org/static/downloads/3.2/mpich-3.2.tar.gz
+ tar xvf mpich-3.2.tar.gz 
+ cd mpich-3.2
+ ./configure --prefix=/home/jhdavis/install/mpich
+ make -j32
+ make install
+
+#Mimir-dev
+  git clone https://github.com/TauferLab/Mimir-dev.git
+  cd Mimir-dev
+  git checkout power-capping
+  emacs ~/.bashrc
+
+Added these lines:
+
+  # User specific aliases and functions                                                    
+  export PATH=/home/jhdavis/install/mpich/bin:$PATH
+  export LD_LIBRARY_PATH=/home/jhdavis/install/papi/lib/:$LD_LIBRARY_PATH
+Then
+
+  source ~/.bashrc
+  autoreconf -i
+  ./configure --prefix=/home/jhdavis/install/mimir --with-papi=/home/jhdavis/install/papi/
+  make clean
+  make
+  make install
+
+
+#PAPI 
+git clone https://bitbucket.org/icl/papi.git
+  cd papi/src
+  ./configure --prefix=/home/jhdavis/install/papi --with-components="powercap"
+  make
+  make install
+  make test
+

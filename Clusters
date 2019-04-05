@@ -1,0 +1,20 @@
+#Connect to Methanol (KNM)
+$ ssh polaya@methanol.icl.utk.edu
+
+#Connect to Cori (Haswell and KNL)
+$ ssh polaya@cori.nersc.gov
+When login in cori:
+Code=fromGoogleAuthentificator
+Password+OTP= Polayita2422126*
+
+#Connect to Lookout (Power9 with V100)
+$ globalprotect connect --portal vpn.utc.edu
+username: polaya
+password: 2422126Polayita*
+$ ssh polaya@ts.simcenter.utc.edu
+password: Polayita2422126*
+$ ssh lookout.simcenter.utc.edu
+$ globalprotect disconnect
+
+#Interactive node
+$salloc -N 1 srun --pty bash

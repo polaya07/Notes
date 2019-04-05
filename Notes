@@ -1,0 +1,69 @@
+1. To install Slack on centos7, follow instructions on the link:
+https://wiki.base22.com/btg/install-slack-in-centos-7-133993146.html
+
+2.Create a public key for SSH. 
+Go to ssh: cd ~/.ssh
+Open and copy the content of id_dsap.pub file
+keyIf there isn't this file, create a key: ssh-keygen
+Put empty when they ask for passphrase (Enter)
+Copy the key: cat id_rsa.pub
+- If there is a file called 'known_hosts', you need to delete it! and run cori again.
+
+*KNOWN_HOSTS: your personal Certificate Authority. It is the list of all SSH server host keys that you have determined are accurate. Each entry in known_hosts is one big line with three or more whitespace separated fields as follows:
+a. One or more server names or IP Addresses, joined together by commas.
+foo.com,107.180.00.00
+b. The type of key.
+ssh-rsa
+c. The public key data itself encoded to stay within the ASCII range.
+AAAAB3NzaC1yc2EAAAABIwAAAQEAuJfqSnraBz//Ux4j/hZpLv2eYUxNUgCk+9ClqoSgfcu4vXbWtUGSjo75UVQf+uguOeBnRLppJJ3mt0R5c/PPcawUGWfffk33t+biYcqra9xUcyfiGtO/Icko2L1J0EYTXM/8x8VK6UYFMfad2gltnZRa8Am50oHTXot1Df0RljUBxvh/UhmTJUrODpyrl2xY1OMWjM+S6uYCMNeSQGEpNfsWiCIStRnctMZSxiYJOLTSC4F2GF7B8pYFBn5rSwVHp17WCdO+4BZfwvH3HSSH8IWoyFhki+NlG912SEBJXcryvc0JPfAB9DTB4mRImjgrRT8vz5QeaCDrh8k4/A+U1fff
+d. Any optional comment data.
+*https://security.stackexchange.com/questions/20706/what-is-the-difference-between-authorized-keys-and-known-hosts-file-for-ssh/20710#20710
+
+Create a TOKEN FOR MFA: 
+1. Download Google Authentificator app
+2. Enter to NIM profile https://nim.nersc.gov/frameset.phtml
+3. Go to MyStaff/MyMFATokens and add a token (Description could be whatever)
+4. Scan barcode 
+
+When login in cori:
+Code=fromGoogleAuthentificator
+Password+OTP= 2422126Polayita* 
+
+3. Location of legends in python
+https://stackoverflow.com/questions/4700614/how-to-put-the-legend-out-of-the-plot
+4. Plots and subplot matplotlib
+https://plot.ly/matplotlib/figure-labels/
+5 Colors in pyhton 
+https://matplotlib.org/users/colors.html
+
+
+CORI:
+1. scp FILE polaya@cori.nersc.gov:~/DIR/   // Transfer from local to Cori
+2. scp polaya@cori.nersc.gov:~/FILE/  LocalDIR
+
+Load module for python
+sudo python -m pip install SomePackage
+
+Find function 
+find . -name testfile.txt
+
+
+Installing Discord Canary:
+https://michaelrochefort.com/2017/05/06/discord-centos-7/
+https://github.com/RPM-Outpost/discord
+
+Executable sh bash (Run ./script.sh instead of sh script.sh)
+1. Add #!/bin/bash at the top of your script
+2. IN terminal type chmod +x script.sh
+
+Create a virtualenv for downloading packages on the server (Specially for hydra)
+Taken from https://packaging.python.org/guides/installing-using-pip-and-virtualenv/
+$ python -m virtualenv env //Create virtual environment
+$ source env/bin/activate // Activating virtual env
+$ pip install 'namepackage'
+$ deactivate //Leaving the virtual env
+
+#Connect to Methanol KNM
+$ ssh polaya@methanol.eecs.utk.edu
+
+ta_register cs140: OFMRD-EFWWN-MFYBZ-NNPLD-RPNDJ-SGLBE-FOYLV-KYMKZ-QVKMP-JNUWS-FZPDQ-XXPYU
