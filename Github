@@ -9,3 +9,6 @@ git branch -a
 
 #Delete branches
 git branch -d [namebranch]
+
+#Undo commitments not pushed
+git reset HEAD~ #If you add --soft flag before HEAD~, you will undo just the last commit

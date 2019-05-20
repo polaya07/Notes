@@ -1,3 +1,11 @@
+################################################################
+#Get an account at the ICL machine
+
+#1)Fill form to get an account at the KNM machine from ICL: https://admin.icl.utk.edu/acctmgr/apply.html 
+
+
+
+################################################################
 #Requirements for running powercap tests
 
 #1) Install or load mpich
@@ -24,7 +32,7 @@
   ./powercap_basic #(Check if the test passed)
   ./powercap_limit #(Check if the test passed)
   #Create a powercap script for calibration
-  cp powercap_limit.c poercap_calibrate.c
+  cp powercap_limit.c powercap_calibrate.c
   vim powercap_calibrate.c
   #Change line 133: values[limit_map[i]] = (215 * 1e6); //plus 10 Watts. To set up the maximum TDP of the machine. 
   #Modify make file. Add these lines:
@@ -63,3 +71,8 @@
 
 
 
+################################################################
+#Powercap_tests
+
+
+#1) WordCount
