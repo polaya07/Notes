@@ -12,7 +12,7 @@ $ globalprotect connect --portal vpn.utc.edu
 username: polaya
 password: 2422126Polayita*
 $ ssh polaya@ts.simcenter.utc.edu
-password: Polayita2422126*
+password: 2422126Polayita*
 $ ssh lookout.simcenter.utc.edu
 $ globalprotect disconnect
 

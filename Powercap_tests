@@ -1,5 +1,5 @@
 1. We added some stuff in ~/.bashrc
-2. We changes things from vim multi_freq_test.sh
+2. We changes things from vim multi_freq_test.sh anf from config.norm change the path of Mimir. 
 3. We also changed things from freq_test.sh
 
 4. create a git repos with results

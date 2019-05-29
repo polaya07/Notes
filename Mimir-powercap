@@ -3,7 +3,8 @@
 
 #1)Fill form to get an account at the KNM machine from ICL: https://admin.icl.utk.edu/acctmgr/apply.html 
 
-
+#Once you have an account
+#2)To connect: $ssh polaya@methanol.icl.utk.edu
 
 ################################################################
 #Requirements for running powercap tests
@@ -51,7 +52,7 @@
 #3) Mimir-dev
   git clone https://github.com/TauferLab/Mimir-dev.git
   cd Mimir-dev
-
+  git checkout power-capping
   vim ~/.bashrc
 
   #Added these lines:
@@ -75,4 +76,105 @@
 #Powercap_tests
 
 
-#1) WordCount
+# 1)Add right paths to ~/.bashrc
+ # User specific aliases and functions                                                    
+ export PATH=/nfs/apps/mpich/3.3beta2/bin:$PATH
+ export LD_LIBRARY_PATH=/home/polaya/sw/papi/lib/:$LD_LIBRARY_PATH
+ export PATH=/home/polaya/sw/papi/bin:$PATH
+ export PATH=/home/polaya/local/x86/bin:$PATH
+
+ export C_INCLUDE_PATH=/home/polaya/sw/papi/include:$C_INCLUDE_PATH
+ export C_INCLUDE_PATH=/home/polaya/Downloads/papi/src/testlib:$C_INCLUDE_PATH
+
+ export LD_RUN_PATH=/home/polaya/sw/papi/lib/:$LD_RUN_PATH
+ export LD_LIBRARY_PATH=$/home/polaya/Downloads/papi/src:$LD_LIBRARY_PATH
+
+$ source ~/.bashrc
+
+# 2)Modify files: config.norm, multi_freq_test.sh amd freq_test.sh
+
+ ** multi_freq_test.sh change parameters:
+ $1: dataset (4B72)
+ $2: powercapping % (1.000 given by percentage)
+ $3: buffersize_num(MB) (64 MB)
+ $4: duration(s) (280 s)
+ $5: benchmark (reducebykey)
+ $6: run_num (5) //you must create the folder where to save the results
+
+ add path (~/Downloads/papi/src/components/powercap/tests/powercap_calibrate) at the end to calibrate 
+
+
+ ** config.normal.h
+ change INSTALLDIR of mimir: INSTALLDIR="/home/polaya/sw/mimir"
+
+ ** freq_test.sh
+ Add ~/Downloads/papi/src/components/powercap/tests/powercap_calibrate after machine=`hostname -s` is defined
+
+# 3) Clone my repos with results
+$ git clone https://github.com/polaya07/results_Mimirpowercap.git
+$ cd results/methanol/wc-reducebykey/ 
+#create folder to save results (path must be congruent in freq_test.sh script)
+$ mkdir frequency# #Replace '#' with the run_num
+$ cd frequency#
+$ mkdir dataset #e.g. 4B72
+
+# 4) Run tests:
+$ git clone https://github.com/TauferLab/Mimir-scripts.git
+$ cd Mimir-scripts
+# Create new branch
+$ git checkout paula_dev
+$ git branch new_branch
+$ git checkout -b new_branch paula_dev
+# Run multi_freq test
+$ cd linux_powercap
+$ ./multi_freq_test.sh
+
+#What do you expect to see if the run is successfully running: 
+#filename=/home/polaya/results/methanol/wc-reducebykey/frequency5/4B72/mimir-0.558-power-buff64m-unified-reducebykey-words-4B72-normal-1-68_2019-5-29-12-36-51_trace.txt
+#gather values 1559147811698264600
+#gather values 1559147811831580580
+#gather values 1559147811967673712
+#gather values 1559147812103759546
+#gather values 1559147812240003925
+#gather values 1559147812376030204
+#...
+#end profiling
+#freq_test.sh: done
+#Trying all powercap events
+#Found powercap component at cid 2
+#
+#CURRENT LIMITS
+#EVENT: powercap:::POWER_LIMIT_A_UW:ZONE0        LIMIT: 4095.25 Watts
+#EVENT: powercap:::POWER_LIMIT_B_UW:ZONE0        LIMIT: 320.00 Watts
+#
+#SETTING LIMITS 10 WATTS BELOW CURRENT LIMITS
+#
+#READING LIMITS TO MAKE SURE THEY ARE SET
+#
+#NEW LIMITS
+#EVENT: powercap:::POWER_LIMIT_A_UW:ZONE0        LIMIT: 4085.25 Watts
+#EVENT: powercap:::POWER_LIMIT_B_UW:ZONE0        LIMIT: 310.00 Watts
+#
+#RESET LIMITS BEFORE EXITING...
+#READING RESET LIMITS TO MAKE SURE THEY ARE SET
+#
+#RESET LIMITS
+#EVENT: powercap:::POWER_LIMIT_A_UW:ZONE0        LIMIT: 215.00 Watts
+#EVENT: powercap:::POWER_LIMIT_B_UW:ZONE0        LIMIT: 215.00 Watts
+#done
+#PASSED
+
+
+# 5) Visualize results
+
+# clone Mimir-scripts and results repos in local 
+$ git clone https://github.com/TauferLab/Mimir-scripts.git
+$ git clone https://github.com/polaya07/results_Mimirpowercap.git
+
+# Access to analyze-powercap to parse and plot results
+# Always pull the directory with results
+$ cd Mimir-scripts (master branch)
+$ cd ./analyze-powercap/src
+$ ./parse.sh run_num name (./parse.sh 5 P_test) #Change the specific folders where to run
+$ python hw_stats_plot.py 'name*' testcomplete.png (python hw_stats_plot.py 'P_test*' P_test.png)  #Plot 
+

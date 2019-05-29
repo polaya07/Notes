@@ -1,0 +1,108 @@
+----Installation:
+1. CMake: is a cross-platform Makefile generator! Simply put, CMake automatically generates the Makefiles for your project.
+//CMake (>= 3.1, http://www.cmake.org)
+//Compile
+$ Download from https://cmake.org/download/
+$ tar -xf cmake*.tar.gz
+$ cd cmake*
+$ ./configure --prefix=$HOME
+$ make
+$ make install
+//Check
+$ cmake --version
+
+2. HDF5: is a set of file formats (HDF4, HDF5) designed to store and organize large amounts of data. 
+HDF5 simplifies the file structure to include only two major types of object:
+    Datasets, which are multidimensional arrays of a homogeneous type
+    Groups, which are container structures which can hold datasets and other groups
+//HDF5 with C++ support (http://www.hdfgroup.org/HDF5)
+//Compile
+$ Download from https://www.hdfgroup.org/downloads/hdf5/source-code/#conf
+$ tar -xvf hdf*.tar.gz
+$ cd hdf*
+$ ./configure --prefix=$HOME --enable-cxx  
+$ make -j 16
+$ make install 
+//Check
+$ make check-install
+
+3. GSL - GNU Scientific Library: is a numerical library for C and C++ programmers. The library provides a wide range of mathematical routines such as random number generators, special functions and least-squares fitting. There are over 1000 functions in total with an extensive test suite.
+
+//GSL (>= 1.16, https://www.gnu.org/software/gsl/)
+//Compile
+$Download from ftp://ftp.gnu.org/gnu/gsl/
+$ tar -xvf gsl*.tar.gz
+$ cd gsl*
+$ ./configure --prefix=$HOME
+$ make -j 16
+$ make check
+$ make install
+//Check
+$gsl-config --version
+
+
+4. C++ compiler with C++11 support (tested with GCC 4.9)
+5. Fortran compiler with Fortran 2003 support (tested with GCC 4.9)
+6. Boost: provides free peer-reviewed portable C++ source libraries. We emphasize libraries that work well with the C++ Standard Library. Boost libraries are intended to be widely useful, and usable across a broad spectrum of applications. The Boost license encourages both commercial and non-commercial use.
+//Boost (>~ 1.50, http://www.boost.org/)
+$ sudo yum install boost-devel
+//Check
+$ locate `boost/version.hpp`
+
+***Additionally, at least one of the following linear solvers is required:
+Armadillo available at http://arma.sourceforge.net or as a Linux package usually under the name libarmadillo-dev
+
+Armadillo: is a high quality linear algebra library (matrix maths) for the C++ language, aiming towards a good balance between speed and ease of use 
+
+1. Download openblas-devel: In scientific computing, OpenBLAS is an open source implementation of the BLAS (Basic Linear Algebra Subprograms) API with many hand-crafted optimizations for specific processor types
+$ sudo yum install openblas-devel
+2. Install lapack-devel: 
+$ sudo yum install lapack-devel
+3. Install arpack-devel:
+$ sudo yum install  arpack-devel
+4. Install SuperLU-deve,l 
+$ sudo yum install SuperLU-devel
+*** PARDISO:
+1. Create license: https://pardiso-project.org/
+2. Get email: Download the .so and the key 
+3. Add path to cmake path: 
+export CMAKE_PREFIX_PATH=/home/paulaolaya/swig:~/Downloads/sw/:$CMAKE_PREFIX_PATH
+
+***In order to use the SkyNet Python bindings (highly recommended), these packages are required:
+
+1. SWIG:  SWIG is a software development tool that connects programs written in C and C++ with a variety of high-level programming languages. SWIG is used with different types of target languages including common scripting languages such as Javascript, Perl, PHP, Python, Tcl and Ruby. 
+//SWIG (>= 3.0 http://swig.org)
+$ sudo yum install swig
+//Build SWIG: http://www.linuxfromscratch.org/blfs/view/8.3/general/swig.html
+
+//Add path to cmake
+export CMAKE_PREFIX_PATH=/$HOME/swig:$CMAKE_PREFIX_PATH
+
+2. Python (>= 2.7, https://www.python.org)
+
+
+***To make movies of the nucleosynthesis evolution, the following are needed:
+
+1.FreeType (https://www.freetype.org/): FreeType is a popular software development library used to render text onto bitmaps, and provides support for other font-related operations.
+$ sudo yum install freetype
+2. Cairo (https://cairographics.org/): Cairo is an open source programming library that provides a vector graphics-based, device-independent API for software developers. It provides primitives for two-dimensional drawing across a number of different back ends.
+$ sudo yum install cairo-devel
+3. Cairomm (https://www.cairographics.org/cairomm/): cairomm is a C++ wrapper for the cairo graphics library.
+$ sudo yum install cairomm-devel
+4. SigC++: libsigc++ is a C++ library for typesafe callbacks. libsigc++ implements a callback system for use in abstract interfaces and general programming. 
+$ sudo yum install libsigc++20-devel
+5. FFmpeg (https://ffmpeg.org/): FFmpeg is a free and open source collection of tools for handling multimedia files. It contains a set of shared audio and video libraries such as libavcodec, libavformat, and libavutil. 
+
+$ sudo yum install epel-release
+$ sudo rpm -v --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+$ sudo rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+$ sudo yum install ffmpeg ffmpeg-devel
+$ ffmpeg -version //Check 
+https://linuxize.com/post/how-to-install-ffmpeg-on-centos-7/
+
+//Had some problems with anaconda and hdf5
+So I had to add the path where I had hdf5 compiled. 
+$ export PATH=$HOME/lib/:$PATH
+$ cmake -DSKYNET_MATRIX_SOLVER=pardiso -DCMAKE_INSTALL_PREFIX= ~/skynet/. ~/git-repos/skynet/
+$ sudo make -j4 install
+$ make test
