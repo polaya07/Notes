@@ -1,15 +1,17 @@
 ################################################################
 #Get an account at the ICL machine
 
-#1)Fill form to get an account at the KNM machine from ICL: https://admin.icl.utk.edu/acctmgr/apply.html 
+##1)Fill form to get an account at the KNM machine from ICL: https://admin.icl.utk.edu/acctmgr/apply.html 
 
-#Once you have an account
-#2)To connect: $ssh polaya@methanol.icl.utk.edu
+ #Once you have an account
+##2)To connect: 
+ ssh polaya@methanol.icl.utk.edu
 
 ################################################################
-#Requirements for running powercap tests
+#Requirements to install Mimir with Powercap capability
 
-#1) Install or load mpich
+##1) Install or load mpich
+ #Build from source
  wget http://www.mpich.org/static/downloads/3.2/mpich-3.2.tar.gz
  tar xvf mpich-3.2.tar.gz 
  cd mpich-3.2
@@ -17,83 +19,130 @@
  make -j32
  make install
 
- #On KNM machine (Methanol)
- # $ module load mpich/3.3beta2
- #Check: $mpichversion
+ #Load module on KNM machine (Methanol)
+ module load mpich/3.3beta2
+ #Check the mpi version
+ mpichversion
 
-#2) Install PAPI 
+##2) Install PAPI with powercap capability: 
+  #PAPI installed through module does not have the powercap component
+  cd $HOME 
+  mkdir Downloads
+  cd Downloads
   git clone https://bitbucket.org/icl/papi.git
   cd papi/src
-  ./configure --prefix=<dir-location>/papi --with-components="powercap"
+  ./configure --prefix=$HOME/papi --with-components="powercap"
   make && make install
   make test
-  
   #Check powercap component:
-  cd <dir-location>/papi/src/components/powercap/tests
+  cd $HOME/papi/src/components/powercap/tests
   ./powercap_basic #(Check if the test passed)
   ./powercap_limit #(Check if the test passed)
-  #Create a powercap script for calibration
+
+##3) Add powercap calibration to PAPI
+  #Create a powercap script for calibration 
+  ##This is machine dependet, this value is NOT the power limit from user.
   cp powercap_limit.c powercap_calibrate.c
   vim powercap_calibrate.c
-  #Change line 133: values[limit_map[i]] = (215 * 1e6); //plus 10 Watts. To set up the maximum TDP of the machine. 
-  #Modify make file. Add these lines:
-  TESTS = powercap_basic powercap_limit powercap_calibrate #Add powercap_calibrate
+  #Change line 133: values[limit_map[i]] = (215 * 1e6); ##plus 10 Watts. To set up the maximum TDP of the machine. 
+  #Modify makefile to integrate the new calibration script.
+  #(TO DO: Autocreate the makefile with cmake without having to add this lines) 
+  #Add these lines:
+  TESTS = powercap_basic powercap_limit powercap_calibrate 
 
   powercap_calibrate.o:   powercap_calibrate.c
   	$(CC) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c powercap_calibrate.c -o powercap_calibrate.o
 
   powercap_calibrate: powercap_calibrate.o $(UTILOBJS) $(PAPILIB)
         $(CC) $(INCLUDE) -o powercap_calibrate powercap_calibrate.o $(UTILOBJS) $(PAPILIB) $(LDFLAGS)
-  $ make 
-  $ ./powercap_calibrate #To set up the new max power to 215. 
+  
+  #Run the makefile:
+  make 
+  ./powercap_calibrate #To test if the set up the new max power to 215 is correct. 
 
 
 
-#3) Mimir-dev
+##4) Install Mimir-dev
+  cd $HOME
   git clone https://github.com/TauferLab/Mimir-dev.git
   cd Mimir-dev
   git checkout power-capping
   vim ~/.bashrc
 
-  #Added these lines:
+  ## Added these lines to the ~/.bashrc:
 
-  # User specific aliases and functions                                                    
-  export PATH=<dir-location>/mpich/bin:$PATH
-  export LD_LIBRARY_PATH=<dir-location>/papi/lib/:$LD_LIBRARY_PATH
+  ## User specific aliases and functions                                                    
+  export PATH=/nfs/apps/mpich/3.3beta2/bin:$PATH
+  export LD_LIBRARY_PATH=$HOME/papi/lib/:$LD_LIBRARY_PATH
 
-   #Then
+  ##Then
 
   source ~/.bashrc
   autoreconf -i
-  ./configure --prefix=<dir-location>/mimir --with-papi=<dir-location>/papi/
+  ./configure --prefix=$HOME/mimir --with-papi=$/papi/
   make clean
   make
   make install
 
-
+################################################################
+#Generation the data (Joe Teague)
+ ##To learn about the generation of data look at the next slides. (A set of steps is being prepared for easy running and generation of data)
+ ##Slides: https://docs.google.com/presentation/d/1aA7sXwjXjlmnb7W8DKmZ9u4WXH03NdCa1e-8JmVuO8k/edit?usp=sharing
 
 ################################################################
-#Powercap_tests
+#Set up environment to create and collect results 
+
+## (TO DO: Check ldd executables to see if I have the same links!Libraries and versions!)
+
+## (TO DO: CHECK DATA IF IT'S FROM LOCAL OR FROM A GITHUB)
 
 
-# 1)Add right paths to ~/.bashrc
- # User specific aliases and functions                                                    
+## 1)Add right paths to ~/.bashrc
+ ### User specific aliases and functions                                                    
  export PATH=/nfs/apps/mpich/3.3beta2/bin:$PATH
- export LD_LIBRARY_PATH=/home/polaya/sw/papi/lib/:$LD_LIBRARY_PATH
- export PATH=/home/polaya/sw/papi/bin:$PATH
- export PATH=/home/polaya/local/x86/bin:$PATH
+ export LD_LIBRARY_PATH=$HOME/papi/lib/:$LD_LIBRARY_PATH
+ export PATH=$HOME/papi/bin:$PATH
+ export PATH=$HOME/local/x86/bin:$PATH
 
- export C_INCLUDE_PATH=/home/polaya/sw/papi/include:$C_INCLUDE_PATH
- export C_INCLUDE_PATH=/home/polaya/Downloads/papi/src/testlib:$C_INCLUDE_PATH
+ export C_INCLUDE_PATH=$HOME/papi/include:$C_INCLUDE_PATH
+ export C_INCLUDE_PATH=$HOME/Downloads/papi/src/testlib:$C_INCLUDE_PATH
 
- export LD_RUN_PATH=/home/polaya/sw/papi/lib/:$LD_RUN_PATH
- export LD_LIBRARY_PATH=$/home/polaya/Downloads/papi/src:$LD_LIBRARY_PATH
+ export LD_RUN_PATH=$HOME/papi/lib/:$LD_RUN_PATH
+ export LD_LIBRARY_PATH=$HOME/Downloads/papi/src:$LD_LIBRARY_PATH
 
-$ source ~/.bashrc
+ #In terminal:
+ source ~/.bashrc
 
-# 2)Modify files: config.norm, multi_freq_test.sh amd freq_test.sh
+## 2) Create folder for later to save the running tests
+  ###(TO DO: EXPLORE IF YOU CAN CREATE A GITHUB REPOSITORY WHERE JUST TO ADD WITHOUT SAVING ALL FILES IN HOME DIR)
+  
+  ## For setting up the folder you can do PLAN A or PLAN B
+  ### PLAN A: CREATE LOCAL FOLDER 
+ cd $HOME
+ mkdir results
+ cd results
+ mkdir methanol/wc-reducebykey/frequency#/dataset #dataset= 4B72 or the specific you are will use
+ cd $HOME/methanol/wc-reducebykey/frequency#/dataset
+  ### PLAN B: SAVE ON REPOSITORY 
+ cd $HOME
+ git clone https://github.com/polaya07/results_Mimirpowercap.git
+ cd results_Mimirpowercap/methanol/wc-reducebykey/ 
+#create folder to save results (path must be congruent in freq_test.sh script)
+ mkdir frequency# #Replace '#' with the run_num
+ cd frequency#
+ mkdir dataset #e.g. 4B72
 
- ** multi_freq_test.sh change parameters:
+## 3) Clone the scripts to run the tests:
+ cd $HOME
+ git clone https://github.com/TauferLab/Mimir-scripts.git
+ cd Mimir-scripts
+ git checkout KNM-dev
+ cd Mimir-scripts/linux_powercap
+	
+  ### 3.1)Check this files: multi_freq_test.sh, config.normal.h and freq_test.sh
+
+ ** multi_freq_test.sh 
+ #### In this file there are 6 parameters, next are the explanation each of them in case you want to modify:
  $1: dataset (4B72)
  $2: powercapping % (1.000 given by percentage)
  $3: buffersize_num(MB) (64 MB)
@@ -101,35 +150,39 @@ $ source ~/.bashrc
  $5: benchmark (reducebykey)
  $6: run_num (5) //you must create the folder where to save the results
 
- add path (~/Downloads/papi/src/components/powercap/tests/powercap_calibrate) at the end to calibrate 
-
+ #### Check if this path is at the end of the script 
+ $HOME/Downloads/papi/src/components/powercap/tests/powercap_calibrate 
 
  ** config.normal.h
- change INSTALLDIR of mimir: INSTALLDIR="/home/polaya/sw/mimir"
+ ####Check the directory of mimir: 
+ INSTALLDIR="$HOME/mimir"
 
  ** freq_test.sh
- Add ~/Downloads/papi/src/components/powercap/tests/powercap_calibrate after machine=`hostname -s` is defined
+ #Check if the next line is after machine=`hostname -s` is defined 
+ $HOME/Downloads/papi/src/components/powercap/tests/powercap_calibrate
 
-# 3) Clone my repos with results
-$ git clone https://github.com/polaya07/results_Mimirpowercap.git
-$ cd results/methanol/wc-reducebykey/ 
-#create folder to save results (path must be congruent in freq_test.sh script)
-$ mkdir frequency# #Replace '#' with the run_num
-$ cd frequency#
-$ mkdir dataset #e.g. 4B72
+###############################################################
+#Run the frequency tests
+## (TO DO: ADD DEPENDENCIES AND CALLS INSIDE FUNCTIONS ON THE READ ME FILE!)
+   ##For example:
+   #multi_freq_test.sh
+    #->freq_test.sh
+     #->->run_hw_stats.sh
+      #->->-> $HOME/Mimir-dev/tool/profile_hw_state
+     #->->test_$5.sh #### $5 is replace with the type of benchmark the user is running
+      #->->->test_$5 
+       #->->->-> run.job.sh
+## (TO DO: Organize the linux-powercap folder and create a folder with all the tests)
 
-# 4) Run tests:
-$ git clone https://github.com/TauferLab/Mimir-scripts.git
-$ cd Mimir-scripts
-# Create new branch
-$ git checkout paula_dev
-$ git branch new_branch
-$ git checkout -b new_branch paula_dev
-# Run multi_freq test
-$ cd linux_powercap
-$ ./multi_freq_test.sh
+## Join:
+ cd linux_powercap
+ ./join_multi_freq_test.sh
+     
+## Wordcount: 
+ cd linux_powercap
+ ./multi_freq_test.sh
 
-#What do you expect to see if the run is successfully running: 
+#What do you expect to see if is successfully running: 
 #filename=/home/polaya/results/methanol/wc-reducebykey/frequency5/4B72/mimir-0.558-power-buff64m-unified-reducebykey-words-4B72-normal-1-68_2019-5-29-12-36-51_trace.txt
 #gather values 1559147811698264600
 #gather values 1559147811831580580
@@ -164,17 +217,35 @@ $ ./multi_freq_test.sh
 #done
 #PASSED
 
+## Push results
+ cd $HOME/results_Mimirpowercap/methanol/wc-reducebykey/
+ git add --all
+ git commit -m "New results"
+ git push origin master
 
-# 5) Visualize results
+###############################################################
+# Visualization of results
+## (TO DO: FIND A WAY FOR PLOTTING WITHOUT CHANGING TO LOCAL)
 
-# clone Mimir-scripts and results repos in local 
-$ git clone https://github.com/TauferLab/Mimir-scripts.git
-$ git clone https://github.com/polaya07/results_Mimirpowercap.git
+# clone Mimir-scripts and results repos in your local machine  
+ git clone https://github.com/TauferLab/Mimir-scripts.git
+ git clone https://github.com/polaya07/results_Mimirpowercap.git
 
 # Access to analyze-powercap to parse and plot results
 # Always pull the directory with results
-$ cd Mimir-scripts (master branch)
-$ cd ./analyze-powercap/src
-$ ./parse.sh run_num name (./parse.sh 5 P_test) #Change the specific folders where to run
-$ python hw_stats_plot.py 'name*' testcomplete.png (python hw_stats_plot.py 'P_test*' P_test.png)  #Plot 
+ cd Mimir-scripts
+ git checkout KNM-dev
+ cd analyze_powercap/visualization
+ #./parse.sh run_num name 
+ ./parse.sh 5 P_test #Change the specific folders where to run
+ #python hw_stats_plot.py 'name*' testcomplete.png 
+ python hw_stats_plot.py 'P_test*' P_test.png  #Plot 
 
+
+
+###############################################################
+#BIG TO DOS:
+#1) Check why are we not getting memory power consumption!!!
+#2) Check datasets for wordcount (Where are the saved or are they automatically generated)?
+#3) Get results from Join!! Check why it does not run after the gathering anf profiling
+#4) Ask why are we calibrating at the end of the three powercapping instead of after each one?
