@@ -79,7 +79,7 @@
 
   source ~/.bashrc
   autoreconf -i
-  ./configure --prefix=$HOME/mimir --with-papi=$/papi/
+  ./configure --prefix=$HOME/sw/mimir --with-papi=$HOME/sw/papi/ #papi where the bin, lib and include are
   make clean
   make
   make install
@@ -247,5 +247,7 @@
 #BIG TO DOS:
 #1) Check why are we not getting memory power consumption!!!
 #2) Check datasets for wordcount (Where are the saved or are they automatically generated)?
+#The data
 #3) Get results from Join!! Check why it does not run after the gathering anf profiling
 #4) Ask why are we calibrating at the end of the three powercapping instead of after each one?
+#Inside freq_test.sh I'm calibrating too. In between each test!

@@ -1,0 +1,67 @@
+Monitoring, Management and Status: 
+1. lsid: get the name and version of the cluster
+2. lsclusters
+3. lshots
+4. lsinfo
+5. lsload
+6. lslogin 
+7. lspasswd
+8. lsmon
+
+Task Execution: 
+1. lsrun: Run a task on host
+2. lsgrun: Run a task on a group of hosts
+3. lsplace: return the best host to run a task
+4. lsmake: run a multinode parallel make
+5. lsmake4
+
+
+command lsload, 
+ut: cpu utilization
+it: idle time
+io to local disk
+lsload -R "select[hname=vmhost0] order[-ut]"
+
+comman lsrun, 
+lsrun -R "order[-ut]"
+
+--Build mpi
+LSF_INCLUDEDIR=/../include
+
+
+
+Batch Commands:
+
+bsub: Submit a job
+bjobs: view jobs by various status
+bhist: get the event history of a job or jobs
+bbot/btop: Move a pending job to the top or bottom of a queue
+bmod: modify the status of a job
+bkill: kill job
+bpeek: Peek at or tail a jobs standard output/error
+bstop: suspend a running or pending job
+bresume: resume a running or pending job
+bswitch: switch the queue that the job is waiting in 
+
+bapp: hsow the status of jobs by applciation
+bqueues: show the jobs by queues
+bclusters: show status of all batch cluster configured
+bstatus: show the last message for a job
+bpost: post a message to a job
+bdata: show the status of data manager
+brun: force a job to run on a host or group of hosts
+
+bresize: Resize a runnin job grow or shrink 
+bhosts: list hosts showing batch characteristics
+busers: List active batch users and job status
+bugroup: List batch user group memberships 
+bmgroup: list batch host groups and memberships
+bslots: show the number of free slots
+bsla: show the status of guarantee pools
+
+brsvsub = salloc  
+
+//Need to reserve memory! $bsub -R "rusage[mem=2G]" -m vmhost 
+
+
+

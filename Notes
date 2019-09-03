@@ -66,4 +66,8 @@ $ deactivate //Leaving the virtual env
 #Connect to Methanol KNM
 $ ssh polaya@methanol.eecs.utk.edu
 
+#Conect to Kodiak in LANL
+$ ssh polaya@wtrw.lanl.gov
+$ ssh ko-fe 
+
 ta_register cs140: OFMRD-EFWWN-MFYBZ-NNPLD-RPNDJ-SGLBE-FOYLV-KYMKZ-QVKMP-JNUWS-FZPDQ-XXPYU
